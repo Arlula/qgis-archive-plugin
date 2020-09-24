@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/arlula" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
