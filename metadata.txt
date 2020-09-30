@@ -5,25 +5,25 @@
 [general]
 name=arlula
 qgisMinimumVersion=3.0
-description=arlula
-version=0.1.2
+description=A user interface between QGIS and the Arlula Satellite Imagery API
+version=0.2.1
 author=Arlula
 email=adamhammo99@gmail.com
 
 about=[EXPERIMENTAL] arlula plugin
 
-tracker=https://github.com/Adam-Hammo/arlula-qgis-plugin/issues
-repository=https://github.com/Adam-Hammo/arlula-qgis-plugin
+tracker=https://github.com/Arlula/qgis-archive-plugin/issues
+repository=https://github.com/Arlula/qgis-archive-plugin
 # End of mandatory metadata
 
 # Recommended items:
 
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
-# changelog=
+changelog=changed repo link, removed gevent dependencies, added user-agent header
 
 # Tags are comma separated with spaces allowed
-tags=python
+tags=python,arlula,archive,imagery,api
 
 homepage=https://arlula.com
 category=Plugins
