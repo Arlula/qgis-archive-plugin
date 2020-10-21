@@ -26,7 +26,7 @@ from .resources import *
 from .arlula_dialog import ArlulaDialog
 from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, QFileInfo, QDir
 from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer
 from pyproj import Proj, transform
 import os
@@ -38,10 +38,14 @@ import json
 import arlulaapi
 import PIL.Image
 import requests
+import threading
 
 py_version = sys.version.split(' ')[0]
 os_version = platform.platform()
 def_ua = "archive-sdk " + '[experimental]' + " python " + py_version + " OS " + os_version
+
+DEFAULT_STATUS = "No pending requests"
+VALID_LAYERS = ["img_tiff"]
 
 class Arlula:
     """QGIS Plugin Implementation."""
@@ -101,6 +105,14 @@ class Arlula:
         self.files = []
         self.coords = True
         self.box = False
+        self.orders = []
+        self.selected_orders = []
+        self.resources = []
+        self.selected_resources = []
+        self.download_folder = QFileInfo(QgsProject.instance().fileName()).dir().absolutePath()
+        self.tab = 0
+        self.tabs = ['Search', 'Get resource']
+        self.add_resource = False
         os.chdir(self.plugin_dir)
 
     # noinspection PyMethodMayBeStatic
@@ -216,11 +228,57 @@ class Arlula:
         for f in self.files:
             os.remove(f)
 
+    def list_orders(self):
+        self.dlg.status.setText("Retrieving account orders...")
+        QCoreApplication.processEvents()
+        QgsMessageLog.logMessage('Listing orders', 'Arlula')
+        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
+            self.orders = arlula_session.list_orders()
+        for i,order in enumerate(self.orders):
+            self.dlg.orderList.insertItem(i, f"{order.id} {order.supplier} {order.status}")
+        self.dlg.status.setText(DEFAULT_STATUS)
+    
+    def list_resources(self):
+        QgsMessageLog.logMessage('Listing resources', 'Arlula')
+        self.resources = []
+        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
+            for order in self.selected_orders:
+                order_id = order.text().split(' ')[0]
+                self.dlg.status.setText(f"Retrieving resources for order {order_id}...")
+                QCoreApplication.processEvents()
+                self.dlg.orderLabel.setText(order_id)
+                order_details = arlula_session.get_order(id=order_id)
+                for x in order_details.resources :
+                    self.resources.append(x)
+        for i,r in enumerate(self.resources):
+            self.dlg.resourceList.insertItem(i, f"{r.type} {r.name}")
+        self.dlg.status.setText(DEFAULT_STATUS)
+
+    def download_resources(self):
+        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
+            for i,resource in enumerate(self.selected_resources):
+                resource_id = self.resources[resource[0].row()].id
+                resource_name = resource[1].text().split(' ')[1]
+                resource_type = resource[1].text().split(' ')[0]
+                self.dlg.status.setText(f"Downloading {resource_name} (File {i+1} of {len(self.selected_resources)})")
+                QCoreApplication.processEvents()
+                arlula_session.get_resource(resource_id, filepath=self.download_folder+"/"+resource_name, suppress=True)
+                if resource_type in VALID_LAYERS and self.add_resource:
+                    rlayer = QgsRasterLayer(self.download_folder+"/"+resource_name, resource_name)
+
+                    QgsProject.instance().addMapLayer(rlayer)
+        self.dlg.status.setText(DEFAULT_STATUS)
+
+    def get_resources(self):
+        t = threading.Thread(target=self.download_resources)
+        t.start()
+
     def search(self):
         QgsMessageLog.logMessage('Changing button', 'Arlula')
         self.dlg.searchButton.setText("Loading...")
         self.dlg.searchButton.setEnabled(False)
         self.dlg.resultTable.setRowCount(0)
+        self.dlg.status.setText("Searching the Arlula archive...")
 
         QCoreApplication.processEvents()
 
@@ -277,9 +335,12 @@ class Arlula:
             self.dlg.resultTable.setItem(n, 9, QTableWidgetItem("Place order"))
 
         self.dlg.searchButton.setText("Search")
+        self.dlg.status.setText(DEFAULT_STATUS)
         self.dlg.searchButton.setEnabled(True)
 
     def add_layer(self, item):
+        self.dlg.status.setText("Adding thumbnail layer...")
+        QCoreApplication.processEvents()
         url = self.dlg.resultTable.item(item.row(), 6).text()
         imgname = url.split('/')[-1].split('=')[-1].split('.')[0]
         tfpath = imgname + '-converted.tiff'
@@ -313,6 +374,7 @@ class Arlula:
         rlayer = QgsRasterLayer(lypath, imgname)
 
         QgsProject.instance().addMapLayer(rlayer)
+        self.dlg.status.setText(DEFAULT_STATUS)
 
     def table_click_handler(self, val):
         if val.column() == 8:
@@ -370,6 +432,24 @@ class Arlula:
         QgsMessageLog.logMessage('Changed box flag', 'Arlula')
         self.box = not self.box
 
+    def change_tab(self, ix):
+        self.tab = ix
+        if self.tabs[ix] == 'Get resource' :
+            if self.key is not None and self.secret is not None :
+                self.list_orders()
+
+    def change_orders(self):
+        self.selected_orders = self.dlg.orderList.selectedItems()
+        
+    def change_resources(self):
+        self.selected_resources = zip(self.dlg.resourceList.selectionModel().selectedIndexes(), self.dlg.resourceList.selectedItems())
+
+    def change_resource_folder(self, folder):
+        self.download_folder = QDir(folder).absolutePath()
+
+    def change_add_resource(self, state):
+        self.add_resource = state==2
+
     def run(self):
         """Run method that performs all the real work"""
 
@@ -380,6 +460,7 @@ class Arlula:
             self.dlg = ArlulaDialog()
             # Add listeners to each of the inputs
 
+            # Search tab
             self.dlg.searchButton.clicked.connect(self.search)
             self.dlg.start_date.dateChanged.connect(self.change_start_date)
             self.dlg.end_date.dateChanged.connect(self.change_end_date)
@@ -395,7 +476,18 @@ class Arlula:
             self.dlg.coord_btn.toggled.connect(self.toggle_coord)
             self.dlg.box_btn.toggled.connect(self.toggle_box)
             self.dlg.resultTable.itemClicked.connect(self.table_click_handler)
-
+                        
+            # Get resource tab
+            self.dlg.tabElement.currentChanged.connect(self.change_tab)
+            self.dlg.listButton.clicked.connect(self.list_orders)
+            self.dlg.orderList.itemSelectionChanged.connect(self.change_orders)
+            self.dlg.selectOrder.clicked.connect(self.list_resources)
+            self.dlg.resourceList.itemSelectionChanged.connect(self.change_resources)
+            self.dlg.selectResource.clicked.connect(self.get_resources)
+            self.dlg.resourceFolder.fileChanged.connect(self.change_resource_folder)
+            self.dlg.resourceFolder.setFilePath(self.download_folder)
+            self.dlg.addResource.stateChanged.connect(self.change_add_resource)
+            
             QgsMessageLog.logMessage(
                 f'Plugin loaded in {os.getcwd()}', 'Arlula')
             QgsMessageLog.logMessage(
