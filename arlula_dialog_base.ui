@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1284</width>
+    <width>1266</width>
     <height>851</height>
    </rect>
   </property>
@@ -528,7 +528,7 @@
            <item>
             <widget class="QPushButton" name="selectOrder">
              <property name="text">
-              <string>List resources from selected order(s)</string>
+              <string>List resources from selected order</string>
              </property>
             </widget>
            </item>
@@ -602,7 +602,7 @@
            <item>
             <widget class="QProgressBar" name="progressBar">
              <property name="value">
-              <number>55</number>
+              <number>0</number>
              </property>
              <property name="textVisible">
               <bool>false</bool>

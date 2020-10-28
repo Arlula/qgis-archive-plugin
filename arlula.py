@@ -230,6 +230,7 @@ class Arlula:
 
     def list_orders(self):
         self.dlg.status.setText("Retrieving account orders...")
+        self.dlg.orderList.clear()
         QCoreApplication.processEvents()
         QgsMessageLog.logMessage('Listing orders', 'Arlula')
         with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
@@ -241,6 +242,7 @@ class Arlula:
     def list_resources(self):
         QgsMessageLog.logMessage('Listing resources', 'Arlula')
         self.resources = []
+        self.dlg.resourceList.clear()
         with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
             for order in self.selected_orders:
                 order_id = order.text().split(' ')[0]
@@ -254,24 +256,34 @@ class Arlula:
             self.dlg.resourceList.insertItem(i, f"{r.type} {r.name}")
         self.dlg.status.setText(DEFAULT_STATUS)
 
+    def progress_callback(self):
+        while True :
+            progress = yield
+            if progress is None :
+                progress = 0
+            self.dlg.progressBar.setValue(progress*100)
+            QCoreApplication.processEvents()
+
     def download_resources(self):
         with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            for i,resource in enumerate(self.selected_resources):
+            i = 1
+            for resource in self.selected_resources:
+                pc = self.progress_callback()
                 resource_id = self.resources[resource[0].row()].id
                 resource_name = resource[1].text().split(' ')[1]
                 resource_type = resource[1].text().split(' ')[0]
-                self.dlg.status.setText(f"Downloading {resource_name} (File {i+1} of {len(self.selected_resources)})")
+                self.dlg.status.setText(f"Downloading {resource_name} (File {i})")
                 QCoreApplication.processEvents()
-                arlula_session.get_resource(resource_id, filepath=self.download_folder+"/"+resource_name, suppress=True)
+                arlula_session.get_resource(resource_id, filepath=self.download_folder+"/"+resource_name, suppress=True, progress_generator=pc)
                 if resource_type in VALID_LAYERS and self.add_resource:
                     rlayer = QgsRasterLayer(self.download_folder+"/"+resource_name, resource_name)
-
                     QgsProject.instance().addMapLayer(rlayer)
+                i+=1
         self.dlg.status.setText(DEFAULT_STATUS)
 
     def get_resources(self):
-        t = threading.Thread(target=self.download_resources)
-        t.start()
+        QgsMessageLog.logMessage(f'Downloading resources', 'Arlula')
+        self.download_resources()
 
     def search(self):
         QgsMessageLog.logMessage('Changing button', 'Arlula')
