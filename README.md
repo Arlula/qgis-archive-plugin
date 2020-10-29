@@ -12,12 +12,13 @@ This plugin currently supports:
 - Searching the Arlula satellite imagery archives for imagery
 - Viewing details of all search results
 - Adding thumbnails of search results to the QGIS window
+- List orders
+- Download and view high-quality satellite imagery from orders
 
 It is **Windows only** for the time being, with support for Mac and Linux to come shortly.
 
 In the future it will support:
 - Ordering of imagery
-- Downloading of high-quality resources
 - Signing up to the Arlula API
 
 Stay tuned for our official release!
