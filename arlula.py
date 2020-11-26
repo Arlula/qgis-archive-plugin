@@ -111,8 +111,17 @@ class Arlula:
         self.selected_resources = []
         self.download_folder = QFileInfo(QgsProject.instance().fileName()).dir().absolutePath()
         self.tab = 0
-        self.tabs = ['Search', 'Get resource']
+        self.tabs = ['Search', 'Order imagery', 'Get resource']
+        self.search_results = []
         self.add_resource = False
+        self.webhook = None
+        self.email = None
+        self.webhooks = []
+        self.emails = []
+        self.seats = 0
+        self.eula = False
+        self.trim = False
+        self.price = 0
         os.chdir(self.plugin_dir)
 
     # noinspection PyMethodMayBeStatic
@@ -327,6 +336,7 @@ class Arlula:
                 QgsMessageLog.logMessage(str(self.east), 'Arlula')
                 QgsMessageLog.logMessage(str(self.west), 'Arlula')
         QgsMessageLog.logMessage("Found {} results".format(len(res)), 'Arlula')
+        self.search_results = res
         for row in res:
             n = self.dlg.resultTable.rowCount()
             self.dlg.resultTable.insertRow(n)
@@ -387,10 +397,37 @@ class Arlula:
 
         QgsProject.instance().addMapLayer(rlayer)
         self.dlg.status.setText(DEFAULT_STATUS)
-
+        
+    def go_to_order(self, item, can_trim):
+        self.current_order_details = self.search_results(item.row())
+        self.dlg.tabElement.setCurrentIndex(1)
+        self.dlg.orderImgLabel.setText(f"Viewing {self.current_order_details.id}")
+        self.dlg.eulaAgree.setText(f"I agree to the End User Licence Agreement {self.current_order_details.eula}")
+        self.dlg.trimAoi.setEnabled(can_trim)
+        
     def table_click_handler(self, val):
         if val.column() == 8:
             self.add_layer(val)
+        elif val.column() == 9:
+            self.go_to_order(val, self.box)
+
+    def order_img(self):
+        if not self.eula:
+            self.dlg.status.setText("EULA must be agreed to")
+            return
+        self.dlg.status.setText(f"Ordering image {self.current_order_details.id}")
+        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
+            # arlula_session.order(
+            #     id=self.current_order_details.id,
+            #     eula=self.current_order_details.eula,
+            #     trim=self.trim,
+            #     seats=self.seats,
+            #     webhooks=self.webhooks,
+            #     emails=self.emails
+            #     )
+            pass
+        self.dlg.status.setText(DEFAULT_STATUS)
+
 
     def change_start_date(self, val):
         QgsMessageLog.logMessage('Changed Start Date', 'Arlula')
@@ -462,6 +499,40 @@ class Arlula:
     def change_add_resource(self, state):
         self.add_resource = state==2
 
+    def change_webhook(self, val):
+        self.webhook = val
+        
+    def change_email(self, val):
+        self.email = val
+        
+    def add_webhook(self):
+        if self.webhook == '' or self.webhook is None :
+            return
+        self.webhooks.append(self.webhook)
+        self.dlg.webhookList.insertItem(len(self.webhooks)-1, self.webhook)
+        self.webhook = None
+        self.dlg.webhookIn.setText('')
+
+    def add_email(self):
+        if self.email == '' or self.email is None :
+            return
+        self.emails.append(self.email)
+        self.dlg.emailList.insertItem(len(self.emails)-1, self.email)
+        self.email = None
+        self.dlg.emailIn.setText('')
+        
+    def change_seats(self, val):
+        self.seats = val
+
+    def toggle_eula(self):
+        self.eula = not self.eula
+        
+    def toggle_trim(self):
+        self.trim = not self.trim
+
+    def recalc_price(self):
+        return
+
     def run(self):
         """Run method that performs all the real work"""
 
@@ -499,6 +570,16 @@ class Arlula:
             self.dlg.resourceFolder.fileChanged.connect(self.change_resource_folder)
             self.dlg.resourceFolder.setFilePath(self.download_folder)
             self.dlg.addResource.stateChanged.connect(self.change_add_resource)
+            
+            # Order imagery tab
+            self.dlg.webhookIn.textChanged.connect(self.change_webhook)
+            self.dlg.emailIn.textChanged.connect(self.change_email)
+            self.dlg.webhookAdd.clicked.connect(self.add_webhook)
+            self.dlg.emailAdd.clicked.connect(self.add_email)
+            self.dlg.seats.valueChanged.connect(self.change_seats)
+            self.dlg.eulaAgree.toggled.connect(self.toggle_eula)
+            self.dlg.trimAoi.toggled.connect(self.toggle_trim)
+            self.dlg.sendOrder.clicked.connect(self.order_img)
             
             QgsMessageLog.logMessage(
                 f'Plugin loaded in {os.getcwd()}', 'Arlula')
