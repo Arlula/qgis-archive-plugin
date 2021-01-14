@@ -118,9 +118,8 @@ class Arlula:
         self.email = None
         self.webhooks = []
         self.emails = []
-        self.seats = 0
+        self.seats = 1
         self.eula = False
-        self.trim = False
         self.price = 0
         os.chdir(self.plugin_dir)
 
@@ -347,7 +346,7 @@ class Arlula:
             self.dlg.resultTable.setItem(n, 3, QTableWidgetItem(
                 str(row.area)))
             self.dlg.resultTable.setItem(
-                n, 4, QTableWidgetItem("$"+str(row.price.scene.base/100)))
+                n, 4, QTableWidgetItem("$"+str(row.price.base/100)))
             self.dlg.resultTable.setItem(
                 n, 5, QTableWidgetItem(str(row.cloud)+"%"))
             self.dlg.resultTable.setItem(n, 6, QTableWidgetItem(row.thumbnail))
@@ -398,18 +397,18 @@ class Arlula:
         QgsProject.instance().addMapLayer(rlayer)
         self.dlg.status.setText(DEFAULT_STATUS)
         
-    def go_to_order(self, item, can_trim):
-        self.current_order_details = self.search_results(item.row())
-        self.dlg.tabElement.setCurrentIndex(1)
+    def go_to_order(self, item):
+        self.current_order_details = self.search_results[item.row()]
+        self.dlg.tabWidget.setCurrentIndex(1)
         self.dlg.orderImgLabel.setText(f"Viewing {self.current_order_details.id}")
-        self.dlg.eulaAgree.setText(f"I agree to the End User Licence Agreement {self.current_order_details.eula}")
-        self.dlg.trimAoi.setEnabled(can_trim)
+        self.dlg.eulaLabel.setText(f"I agree to the <a href=\"{self.current_order_details.eula}\">End User Licence Agreement</a>")
+        self.recalc_price()
         
     def table_click_handler(self, val):
         if val.column() == 8:
             self.add_layer(val)
         elif val.column() == 9:
-            self.go_to_order(val, self.box)
+            self.go_to_order(val)
 
     def order_img(self):
         if not self.eula:
@@ -420,13 +419,12 @@ class Arlula:
             # arlula_session.order(
             #     id=self.current_order_details.id,
             #     eula=self.current_order_details.eula,
-            #     trim=self.trim,
-            #     seats=self.seats,
+                #     seats=self.seats,
             #     webhooks=self.webhooks,
             #     emails=self.emails
             #     )
             pass
-        self.dlg.status.setText(DEFAULT_STATUS)
+        self.dlg.status.setText('Order placed')
 
 
     def change_start_date(self, val):
@@ -523,16 +521,30 @@ class Arlula:
         
     def change_seats(self, val):
         self.seats = val
+        self.recalc_price()
 
     def toggle_eula(self):
         self.eula = not self.eula
-        
-    def toggle_trim(self):
-        self.trim = not self.trim
 
     def recalc_price(self):
-        return
-
+        px_obj = self.current_order_details.price
+            
+        px = px_obj.base
+        
+        if px_obj.seats != None :
+            for seatrng in px_obj.seats:
+                if seatrng.min <= self.seats <= seatrng.max:
+                    px+=seatrng.additional
+                    break
+                if seatrng.min <= self.seats and seatrng.max == 0 :
+                    px+=seatrng.additional
+                    break
+            
+        # Convert from US cents to USD
+        px /= 100
+        
+        self.dlg.price.setText(f"Price: ${round(px,2)} USD")
+            
     def run(self):
         """Run method that performs all the real work"""
 
@@ -561,7 +573,7 @@ class Arlula:
             self.dlg.resultTable.itemClicked.connect(self.table_click_handler)
                         
             # Get resource tab
-            self.dlg.tabElement.currentChanged.connect(self.change_tab)
+            self.dlg.tabWidget.currentChanged.connect(self.change_tab)
             self.dlg.listButton.clicked.connect(self.list_orders)
             self.dlg.orderList.itemSelectionChanged.connect(self.change_orders)
             self.dlg.selectOrder.clicked.connect(self.list_resources)
@@ -578,7 +590,6 @@ class Arlula:
             self.dlg.emailAdd.clicked.connect(self.add_email)
             self.dlg.seats.valueChanged.connect(self.change_seats)
             self.dlg.eulaAgree.toggled.connect(self.toggle_eula)
-            self.dlg.trimAoi.toggled.connect(self.toggle_trim)
             self.dlg.sendOrder.clicked.connect(self.order_img)
             
             QgsMessageLog.logMessage(

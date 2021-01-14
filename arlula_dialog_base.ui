@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1265</width>
-    <height>851</height>
+    <width>1263</width>
+    <height>844</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -491,10 +491,10 @@
        <widget class="QWidget" name="verticalLayoutWidget_6">
         <property name="geometry">
          <rect>
-          <x>50</x>
-          <y>20</y>
-          <width>1161</width>
-          <height>701</height>
+          <x>10</x>
+          <y>10</y>
+          <width>1221</width>
+          <height>661</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -503,7 +503,7 @@
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_10">
              <item>
-              <widget class="QLabel" name="label_17">
+              <widget class="QLabel" name="orderImgLabel">
                <property name="font">
                 <font>
                  <pointsize>12</pointsize>
@@ -527,7 +527,14 @@
                 </widget>
                </item>
                <item>
-                <widget class="QSpinBox" name="spinBox"/>
+                <widget class="QSpinBox" name="seats">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>99999</number>
+                 </property>
+                </widget>
                </item>
                <item>
                 <spacer name="horizontalSpacer">
@@ -545,18 +552,44 @@
               </layout>
              </item>
              <item>
-              <widget class="QCheckBox" name="trimAoi">
-               <property name="text">
-                <string>Trim image to AOI</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="eulaAgree">
-               <property name="text">
-                <string>I agree to the End User Licence Agreement</string>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_15">
+               <item>
+                <widget class="QCheckBox" name="eulaAgree">
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="eulaLabel">
+                 <property name="text">
+                  <string>I agree to the End User Licence Agreement</string>
+                 </property>
+                 <property name="textFormat">
+                  <enum>Qt::RichText</enum>
+                 </property>
+                 <property name="openExternalLinks">
+                  <bool>true</bool>
+                 </property>
+                 <property name="textInteractionFlags">
+                  <set>Qt::TextBrowserInteraction</set>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -608,7 +641,19 @@
               </layout>
              </item>
              <item>
-              <widget class="QListView" name="emailList"/>
+              <widget class="QListWidget" name="emailList"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="price">
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Price: </string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="sendOrder">
