@@ -14,11 +14,23 @@ This plugin currently supports:
 - Adding thumbnails of search results to the QGIS window
 - List orders
 - Download and view high-quality satellite imagery from orders
+- Ordering of imagery
 
 It is **Windows only** for the time being, with support for Mac and Linux to come shortly.
 
 In the future it will support:
-- Ordering of imagery
 - Signing up to the Arlula API
+
+## For developers
+- Use `paver` to manage dependencies into `extlibs` before uploading plugin versions
+- plugin format for QGIS release should be:
+```
+arlula.zip
++-- arlula/
+|   +-- extlibs/
+|   +-- __init__.py
+|   +-- ...
+|   +-- resources.qrc
+```
 
 Stay tuned for our official release!

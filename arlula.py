@@ -42,7 +42,7 @@ import threading
 
 py_version = sys.version.split(' ')[0]
 os_version = platform.platform()
-def_ua = "qgis-plugin " + '[experimental]' + " python " + py_version + " OS " + os_version
+def_ua = "qgis-plugin " + '[experimental v0.4.0]' + " python " + py_version + " OS " + os_version
 
 # Default message to display on GUI
 DEFAULT_STATUS = "No pending requests"
