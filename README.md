@@ -32,5 +32,6 @@ arlula.zip
 |   +-- ...
 |   +-- resources.qrc
 ```
+- this zip can be tested locally in QGIS by uploading in the plugin menu
 
 Stay tuned for our official release!
