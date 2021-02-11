@@ -21,12 +21,12 @@
  *                                                                         *
  ***************************************************************************/
 """
-# non-pip imports
+# imports
 from .resources import *
 from .arlula_dialog import ArlulaDialog
 from qgis.PyQt.QtWidgets import QAction, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, QFileInfo, QDir
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QTranslator, QFileInfo, QDir, QDate
 from qgis.core import QgsMessageLog, QgsProject, QgsRasterLayer
 from pyproj import Proj, transform
 import os
@@ -35,21 +35,25 @@ import shutil
 import platform
 from io import BytesIO
 import json
-import arlulaapi
+import arlulacore
 import PIL.Image
 import requests
 import threading
 
 py_version = sys.version.split(' ')[0]
 os_version = platform.platform()
-def_ua = "archive-sdk " + '[experimental]' + " python " + py_version + " OS " + os_version
+def_ua = "qgis-plugin " + '[experimental]' + " python " + py_version + " OS " + os_version
 
+# Default message to display on GUI
 DEFAULT_STATUS = "No pending requests"
+
+# filetypes that can be added to QGIS as a layer
 VALID_LAYERS = ["img_tiff"]
 
 class Arlula:
     """QGIS Plugin Implementation."""
 
+    # Set global variables for the package
     def __init__(self, iface):
         """Constructor.
 
@@ -83,10 +87,15 @@ class Arlula:
         # Must be set in initGui() to survive plugin reloads
         self.first_start = None
 
-        # Set form vars
-        self.start_date = None
-        self.end_date = None
-        self.res = None
+        ### Set GUI vars and defaults ###
+        # Global
+        self.tab = 0
+        self.tabs = ['Search', 'Order imagery', 'Get resource']
+        
+        # Search form
+        self.start_date = QDate(2021,1,1)
+        self.end_date = QDate(2021,1,1)
+        self.res = 'vhigh'
         self.lat = -33.87
         self.long = 151.21
         self.south = -33.87
@@ -102,6 +111,9 @@ class Arlula:
             'Low (5m-20m)': 'low',
             'Very Low (>20m)': 'vlow'
         }
+        self.search_results = []
+        
+        # Get resouce
         self.files = []
         self.coords = True
         self.box = False
@@ -110,10 +122,9 @@ class Arlula:
         self.resources = []
         self.selected_resources = []
         self.download_folder = QFileInfo(QgsProject.instance().fileName()).dir().absolutePath()
-        self.tab = 0
-        self.tabs = ['Search', 'Order imagery', 'Get resource']
-        self.search_results = []
         self.add_resource = False
+        
+        # Order imagery
         self.webhook = None
         self.email = None
         self.webhooks = []
@@ -121,9 +132,13 @@ class Arlula:
         self.seats = 1
         self.eula = False
         self.price = 0
+        
+        # Finally change directory to the plugin folder for downloads
         os.chdir(self.plugin_dir)
 
-    # noinspection PyMethodMayBeStatic
+    ### Default initialisation functions ###
+
+    # noinspection PyMethodMayBeStatic [UNUSED]
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
 
@@ -236,105 +251,50 @@ class Arlula:
         for f in self.files:
             os.remove(f)
 
-    def list_orders(self):
-        self.dlg.status.setText("Retrieving account orders...")
-        self.dlg.orderList.clear()
-        QCoreApplication.processEvents()
-        QgsMessageLog.logMessage('Listing orders', 'Arlula')
-        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            self.orders = arlula_session.list_orders()
-        for i,order in enumerate(self.orders):
-            self.dlg.orderList.insertItem(i, f"{order.id} {order.supplier} {order.status}")
-        self.dlg.status.setText(DEFAULT_STATUS)
-    
-    def list_resources(self):
-        QgsMessageLog.logMessage('Listing resources', 'Arlula')
-        self.resources = []
-        self.dlg.resourceList.clear()
-        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            for order in self.selected_orders:
-                order_id = order.text().split(' ')[0]
-                self.dlg.status.setText(f"Retrieving resources for order {order_id}...")
-                QCoreApplication.processEvents()
-                self.dlg.orderLabel.setText(order_id)
-                order_details = arlula_session.get_order(id=order_id)
-                for x in order_details.resources :
-                    self.resources.append(x)
-        for i,r in enumerate(self.resources):
-            self.dlg.resourceList.insertItem(i, f"{r.type} {r.name}")
-        self.dlg.status.setText(DEFAULT_STATUS)
-
-    def progress_callback(self):
-        while True :
-            progress = yield
-            if progress is None :
-                progress = 0
-            self.dlg.progressBar.setValue(progress*100)
-            QCoreApplication.processEvents()
-
-    def download_resources(self):
-        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            i = 1
-            for resource in self.selected_resources:
-                pc = self.progress_callback()
-                resource_id = self.resources[resource[0].row()].id
-                resource_name = resource[1].text().split(' ')[1]
-                resource_type = resource[1].text().split(' ')[0]
-                self.dlg.status.setText(f"Downloading {resource_name} (File {i})")
-                QCoreApplication.processEvents()
-                arlula_session.get_resource(resource_id, filepath=self.download_folder+"/"+resource_name, suppress=True, progress_generator=pc)
-                if resource_type in VALID_LAYERS and self.add_resource:
-                    rlayer = QgsRasterLayer(self.download_folder+"/"+resource_name, resource_name)
-                    QgsProject.instance().addMapLayer(rlayer)
-                i+=1
-        self.dlg.status.setText(DEFAULT_STATUS)
-
-    def get_resources(self):
-        QgsMessageLog.logMessage(f'Downloading resources', 'Arlula')
-        self.download_resources()
+    ### Search functionality ###
 
     def search(self):
+        # Interact with GUI
         QgsMessageLog.logMessage('Changing button', 'Arlula')
         self.dlg.searchButton.setText("Loading...")
         self.dlg.searchButton.setEnabled(False)
         self.dlg.resultTable.setRowCount(0)
         self.dlg.status.setText("Searching the Arlula archive...")
 
+        # Force GUI to refresh
         QCoreApplication.processEvents()
 
         QgsMessageLog.logMessage('Searching', 'Arlula')
-        QgsMessageLog.logMessage(
-            self.start_date.toString('yyyy-MM-dd'), 'Arlula')
-        QgsMessageLog.logMessage(
-            self.end_date.toString('yyyy-MM-dd'), 'Arlula')
-        QgsMessageLog.logMessage(self.res, 'Arlula')
-
-        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            if self.coords:
-                res = arlula_session.search(
-                    start=self.start_date.toString('yyyy-MM-dd'),
-                    end=self.end_date.toString('yyyy-MM-dd'),
-                    res=self.res,
-                    lat=self.lat,
-                    long=self.long
-                )
-                QgsMessageLog.logMessage(str(self.lat), 'Arlula')
-                QgsMessageLog.logMessage(str(self.long), 'Arlula')
-            elif self.box:
-                res = arlula_session.search(
-                    start=self.start_date.toString('yyyy-MM-dd'),
-                    end=self.end_date.toString('yyyy-MM-dd'),
-                    res=self.res,
-                    south=self.south,
-                    north=self.north,
-                    east=self.east,
-                    west=self.west
-                )
-                QgsMessageLog.logMessage(str(self.north), 'Arlula')
-                QgsMessageLog.logMessage(str(self.south), 'Arlula')
-                QgsMessageLog.logMessage(str(self.east), 'Arlula')
-                QgsMessageLog.logMessage(str(self.west), 'Arlula')
+        
+        # Query the Arlula API
+        arlula_session = arlulacore.Session(self.key, self.secret, user_agent=def_ua)
+        if self.coords:
+            res = arlulacore.Archive(arlula_session).search(
+                start=self.start_date.toString('yyyy-MM-dd'),
+                end=self.end_date.toString('yyyy-MM-dd'),
+                res=self.res,
+                lat=self.lat,
+                long=self.long
+            )
+            QgsMessageLog.logMessage(str(self.lat), 'Arlula')
+            QgsMessageLog.logMessage(str(self.long), 'Arlula')
+        elif self.box:
+            res = arlulacore.Archive(arlula_session).search(
+                start=self.start_date.toString('yyyy-MM-dd'),
+                end=self.end_date.toString('yyyy-MM-dd'),
+                res=self.res,
+                south=self.south,
+                north=self.north,
+                east=self.east,
+                west=self.west
+            )
+            QgsMessageLog.logMessage(str(self.north), 'Arlula')
+            QgsMessageLog.logMessage(str(self.south), 'Arlula')
+            QgsMessageLog.logMessage(str(self.east), 'Arlula')
+            QgsMessageLog.logMessage(str(self.west), 'Arlula')
         QgsMessageLog.logMessage("Found {} results".format(len(res)), 'Arlula')
+        
+        # Populate the table
         self.search_results = res
         for row in res:
             n = self.dlg.resultTable.rowCount()
@@ -355,13 +315,17 @@ class Arlula:
             self.dlg.resultTable.setItem(n, 8, QTableWidgetItem("Add layer"))
             self.dlg.resultTable.setItem(n, 9, QTableWidgetItem("Place order"))
 
+        # Reset the GUI
         self.dlg.searchButton.setText("Search")
         self.dlg.status.setText(DEFAULT_STATUS)
         self.dlg.searchButton.setEnabled(True)
 
+    # Function to add thumbnail jpg to qgis layers
     def add_layer(self, item):
         self.dlg.status.setText("Adding thumbnail layer...")
         QCoreApplication.processEvents()
+        
+        # Get the thumbnail url and specify filenames
         url = self.dlg.resultTable.item(item.row(), 6).text()
         imgname = url.split('/')[-1].split('=')[-1].split('.')[0]
         tfpath = imgname + '-converted.tiff'
@@ -369,10 +333,13 @@ class Arlula:
         self.files.append(tfpath)
         self.files.append(lypath)
         QgsMessageLog.logMessage(url, 'Arlula')
+        
+        # Get the JPG thumbnail and save it down as TIFF
         r = requests.get(url)
         img = PIL.Image.open(BytesIO(r.content))
         img.save(tfpath)
 
+        # Find corner coordinates of thumbnail
         bounding = json.loads(self.dlg.resultTable.item(item.row(), 7).text())
         left = bounding[0][1]
         right = bounding[0][1]
@@ -388,95 +355,214 @@ class Arlula:
             elif coord[0] > top:
                 top = coord[0]
 
+        # Add coordinates to TIFF metadata
         call = f'gdal_translate -of GTiff -a_ullr {left} {top} {right} {bottom} -a_srs EPSG:4326 {tfpath} {lypath}'
         QgsMessageLog.logMessage('Executing {}'.format(call), 'Arlula')
         os.system(call)
 
+        # Add TIFF to layers
         rlayer = QgsRasterLayer(lypath, imgname)
 
         QgsProject.instance().addMapLayer(rlayer)
         self.dlg.status.setText(DEFAULT_STATUS)
-        
-    def go_to_order(self, item):
-        self.current_order_details = self.search_results[item.row()]
-        self.dlg.tabWidget.setCurrentIndex(1)
-        self.dlg.orderImgLabel.setText(f"Viewing {self.current_order_details.id}")
-        self.dlg.eulaLabel.setText(f"I agree to the <a href=\"{self.current_order_details.eula}\">End User Licence Agreement</a>")
-        self.recalc_price()
-        
+
+
     def table_click_handler(self, val):
+        # Function to handle clicking of the search results table
         if val.column() == 8:
             self.add_layer(val)
         elif val.column() == 9:
-            self.go_to_order(val)
+            self.render_order_tab(val)
+
+    ### Get resource functionality ###
+
+    def list_orders(self):
+        # Function to list available orders
+        self.dlg.status.setText("Retrieving account orders...")
+        self.dlg.orderList.clear()
+        QCoreApplication.processEvents()
+        QgsMessageLog.logMessage('Listing orders', 'Arlula')
+        
+        # Query API
+        arlula_session = arlulacore.Session(self.key, self.secret, user_agent=def_ua)
+        self.orders = arlulacore.Orders(arlula_session).list()
+        
+        # Populate GUI list
+        for i,order in enumerate(self.orders):
+            self.dlg.orderList.insertItem(i, f"{order.id} {order.supplier} {order.status}")
+        self.dlg.status.setText(DEFAULT_STATUS)
+    
+    def list_resources(self):
+        # Function to list available resources from one or more selected orders
+        QgsMessageLog.logMessage('Listing resources', 'Arlula')
+        self.resources = []
+        self.dlg.resourceList.clear()
+        
+        # Get resources from API and place in a list
+        arlula_session = arlulacore.Session(self.key, self.secret, user_agent=def_ua)
+        for order in self.selected_orders:
+            order_id = order.text().split(' ')[0]
+            self.dlg.status.setText(f"Retrieving resources for order {order_id}...")
+            QCoreApplication.processEvents()
+            self.dlg.orderLabel.setText(order_id)
+            order_details = arlulacore.Orders(arlula_session).get(id=order_id)
+            for x in order_details.resources :
+                self.resources.append(x)
+                
+        # Populate GUI list
+        for i,r in enumerate(self.resources):
+            self.dlg.resourceList.insertItem(i, f"{r.type} {r.name}")
+        self.dlg.status.setText(DEFAULT_STATUS)
+
+    def progress_callback(self):
+        # A generator to pass to the download helper
+        # Allows for download progress bar to update
+        while True :
+            progress = yield
+            if progress is None :
+                progress = 0
+                
+            # Set the progress bar and update the GUI
+            self.dlg.progressBar.setValue(progress*100)
+            QCoreApplication.processEvents()
+
+    def download_resources(self):
+        # Function to download selected resources
+        arlula_session = arlulacore.Session(self.key, self.secret, user_agent=def_ua)
+        i = 1
+        
+        # For each resource, call the download helper
+        for resource in self.selected_resources:
+            pc = self.progress_callback()
+            resource_id = self.resources[resource[0].row()].id
+            resource_name = resource[1].text().split(' ')[1]
+            resource_type = resource[1].text().split(' ')[0]
+            self.dlg.status.setText(f"Downloading {resource_name} (File {i})")
+            QCoreApplication.processEvents()
+            arlulacore.Orders(arlula_session).get_resource(resource_id, filepath=self.download_folder+"/"+resource_name, suppress=True, progress_generator=pc)
+            
+            # Add as layer if valid filetype and box checked
+            if resource_type in VALID_LAYERS and self.add_resource:
+                rlayer = QgsRasterLayer(self.download_folder+"/"+resource_name, resource_name)
+                QgsProject.instance().addMapLayer(rlayer)
+            i+=1
+        self.dlg.status.setText(DEFAULT_STATUS)
+
+    def get_resources(self):
+        self.download_resources()
+        
+    
+    ### Order functionality ###
+        
+    def render_order_tab(self, item):
+        # Function to render the selected order
+        self.current_order_details = self.search_results[item.row()]
+        self.dlg.tabWidget.setCurrentIndex(1)
+        
+        # Set order details table
+        self.dlg.imageDetails.setHtml(f"""<h6>Imagery details</h6>
+                                      See the <a href="https://arlula.com/documentation/">API documentation</a> for more information on each parameter.<br/><br/>
+                                      View the thumbnail <a href="{self.current_order_details.thumbnail}">here</a>.
+                                      <table border='1'>
+                                      <tr><th>Parameter</th><th>Value</th><tr>
+                                      <tr><td>Supplier</td><td>{self.current_order_details.supplier}</td></tr>
+                                      <tr><td>Date</td><td>{self.current_order_details.date}</td></tr>
+                                      <tr><td>Center (long, lat)</td><td>{(self.current_order_details.center.long,self.current_order_details.center.lat)}</td></tr>
+                                      <tr><td>Bounding box (long,lat)</td><td>{self.current_order_details.bounding}</td></tr>
+                                      <tr><td>Area</td><td>{self.current_order_details.area}</td></tr>
+                                      <tr><td>Overlap area</td><td>{self.current_order_details.overlap.area}</td></tr>
+                                      <tr><td>Overlap percent</td><td>{self.current_order_details.overlap.percent}</td></tr>
+                                      <tr><td>Fulfillment time</td><td>{self.current_order_details.fulfillmentTime}</td></tr>
+                                      <tr><td>Resolution</td><td>{self.current_order_details.resolution}</td></tr>
+                                      <tr><td>Cloud</td><td>{self.current_order_details.cloud}</td></tr>
+                                      <tr><td>Annotations</td><td>{self.current_order_details.annotations}</td></tr>
+                                      </table>""")
+        
+        self.dlg.orderImgLabel.setText(f"Ordering scene {self.current_order_details.sceneID}")
+        self.dlg.eulaLabel.setText(f"I agree to the <a href=\"{self.current_order_details.eula}\">End User Licence Agreement</a>")
+        self.recalc_price()
 
     def order_img(self):
+        # Function to submit order
+        
+        # Check eula compliance
         if not self.eula:
             self.dlg.status.setText("EULA must be agreed to")
             return
+        
+        # Submit order
         self.dlg.status.setText(f"Ordering image {self.current_order_details.id}")
-        with arlulaapi.ArlulaSession(self.key, self.secret, allow_async=False, user_agent=def_ua) as arlula_session:
-            # arlula_session.order(
-            #     id=self.current_order_details.id,
-            #     eula=self.current_order_details.eula,
-                #     seats=self.seats,
-            #     webhooks=self.webhooks,
-            #     emails=self.emails
-            #     )
-            pass
+        arlula_session = arlulacore.Session(self.key, self.secret, user_agent=def_ua)
+        arlulacore.Archive(arlula_session).order(
+            id=self.current_order_details.id,
+            eula=self.current_order_details.eula,
+            seats=self.seats,
+            webhooks=self.webhooks,
+            emails=self.emails
+            )
+        
         self.dlg.status.setText('Order placed')
 
+    def recalc_price(self):
+        # Recalculate the price (called on seats change)
+        px_obj = self.current_order_details.price
+            
+        px = px_obj.base
+        
+        # Calc price
+        if px_obj.seats != None :
+            for seatrng in px_obj.seats:
+                if seatrng.min <= self.seats <= seatrng.max:
+                    px+=seatrng.additional
+                    break
+                if seatrng.min <= self.seats and seatrng.max == 0 :
+                    px+=seatrng.additional
+                    break
+            
+        # Convert from US cents to USD
+        px /= 100
+        
+        self.dlg.price.setText(f"Price: ${round(px,2)} USD")
+        
+    ### Variable setter functions ###
 
     def change_start_date(self, val):
-        QgsMessageLog.logMessage('Changed Start Date', 'Arlula')
         self.start_date = val
 
     def change_end_date(self, val):
-        QgsMessageLog.logMessage('Changed End Date', 'Arlula')
         self.end_date = val
 
     def change_res(self, val):
-        QgsMessageLog.logMessage('Changed Resolution', 'Arlula')
         self.res = self.resmap[val]
 
     def change_lat(self, val):
-        QgsMessageLog.logMessage('Changed Latitude', 'Arlula')
         self.lat = val
 
     def change_long(self, val):
-        QgsMessageLog.logMessage('Changed Longitude', 'Arlula')
         self.long = val
 
     def change_sth(self, val):
-        QgsMessageLog.logMessage('Changed South', 'Arlula')
         self.south = val
 
     def change_nth(self, val):
-        QgsMessageLog.logMessage('Changed North', 'Arlula')
         self.north = val
 
     def change_est(self, val):
-        QgsMessageLog.logMessage('Changed East', 'Arlula')
         self.east = val
 
     def change_wst(self, val):
-        QgsMessageLog.logMessage('Changed West', 'Arlula')
         self.west = val
 
     def change_key(self, val):
-        QgsMessageLog.logMessage('Changed API Key', 'Arlula')
         self.key = val
 
     def change_secret(self, val):
-        QgsMessageLog.logMessage('Changed API Secret', 'Arlula')
         self.secret = val
 
     def toggle_coord(self):
-        QgsMessageLog.logMessage('Changed coord flag', 'Arlula')
         self.coords = not self.coords
 
     def toggle_box(self):
-        QgsMessageLog.logMessage('Changed box flag', 'Arlula')
         self.box = not self.box
 
     def change_tab(self, ix):
@@ -525,34 +611,17 @@ class Arlula:
 
     def toggle_eula(self):
         self.eula = not self.eula
-
-    def recalc_price(self):
-        px_obj = self.current_order_details.price
-            
-        px = px_obj.base
-        
-        if px_obj.seats != None :
-            for seatrng in px_obj.seats:
-                if seatrng.min <= self.seats <= seatrng.max:
-                    px+=seatrng.additional
-                    break
-                if seatrng.min <= self.seats and seatrng.max == 0 :
-                    px+=seatrng.additional
-                    break
-            
-        # Convert from US cents to USD
-        px /= 100
-        
-        self.dlg.price.setText(f"Price: ${round(px,2)} USD")
             
     def run(self):
-        """Run method that performs all the real work"""
+        """Main function"""
 
         # Create the dialog with elements (after translation) and keep reference
         # Only create GUI ONCE in callback, so that it will only load when the plugin is started
         if self.first_start == True:
             self.first_start = False
             self.dlg = ArlulaDialog()
+            
+            
             # Add listeners to each of the inputs
 
             # Search tab
@@ -578,7 +647,7 @@ class Arlula:
             self.dlg.orderList.itemSelectionChanged.connect(self.change_orders)
             self.dlg.selectOrder.clicked.connect(self.list_resources)
             self.dlg.resourceList.itemSelectionChanged.connect(self.change_resources)
-            self.dlg.selectResource.clicked.connect(self.get_resources)
+            self.dlg.selectResource.clicked.connect(self.download_resources)
             self.dlg.resourceFolder.fileChanged.connect(self.change_resource_folder)
             self.dlg.resourceFolder.setFilePath(self.download_folder)
             self.dlg.addResource.stateChanged.connect(self.change_add_resource)
@@ -604,10 +673,3 @@ class Arlula:
         # See if OK was pressed
         if result:
             QgsMessageLog.logMessage('Plugin closed', 'Arlula')
-            # Do something useful here - delete the line containing pass and)
-            # substitute with your code.
-
-            # Search with params and put data in le table
-
-        # while True:
-        #     pass

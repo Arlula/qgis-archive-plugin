@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1263</width>
-    <height>844</height>
+    <width>1098</width>
+    <height>703</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="minimumSize">
    <size>
@@ -19,646 +25,841 @@
   <property name="windowTitle">
    <string>Arlula</string>
   </property>
-  <widget class="QWidget" name="verticalLayoutWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>1251</width>
-     <height>821</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_8">
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>API Key</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="key">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>API Secret</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="secret">
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-    <item>
-     <widget class="QTabWidget" name="tabWidget">
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="tab">
-       <attribute name="title">
-        <string>Search Archive</string>
-       </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget_4">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>1231</width>
-          <height>641</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_5">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
-           <item>
-            <layout class="QFormLayout" name="formLayout_2">
-             <property name="fieldGrowthPolicy">
-              <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-             </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_6">
-               <property name="text">
-                <string>Start Date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_7">
-               <property name="text">
-                <string>End Date</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QDateEdit" name="end_date">
-               <property name="dateTime">
-                <datetime>
-                 <hour>0</hour>
-                 <minute>0</minute>
-                 <second>0</second>
-                 <year>2020</year>
-                 <month>6</month>
-                 <day>1</day>
-                </datetime>
-               </property>
-               <property name="displayFormat">
-                <string>yyyy-MM-dd</string>
-               </property>
-               <property name="calendarPopup">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>Resolution</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="QComboBox" name="res">
-               <item>
-                <property name="text">
-                 <string>Very High (&lt;0.5m)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>High (0.5m-1m)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Medium (1m-5m)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Low (5m-20m)</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Very Low (&gt;20m)</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QDateEdit" name="start_date">
-               <property name="dateTime">
-                <datetime>
-                 <hour>0</hour>
-                 <minute>0</minute>
-                 <second>0</second>
-                 <year>2020</year>
-                 <month>5</month>
-                 <day>1</day>
-                </datetime>
-               </property>
-               <property name="displayFormat">
-                <string>yyyy-MM-dd</string>
-               </property>
-               <property name="calendarPopup">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="modal">
+   <bool>false</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_5">
+     <item row="0" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>API Key</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="key">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>API Secret</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="secret">
+         <property name="echoMode">
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>Search Archive</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <widget class="QGroupBox" name="searchType">
-                 <property name="title">
-                  <string>Please indicate how you want to search</string>
+              <layout class="QFormLayout" name="formLayout_2">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_6">
+                 <property name="text">
+                  <string>Start Date</string>
                  </property>
-                 <widget class="QWidget" name="verticalLayoutWidget">
-                  <property name="geometry">
-                   <rect>
-                    <x>0</x>
-                    <y>20</y>
-                    <width>160</width>
-                    <height>141</height>
-                   </rect>
-                  </property>
-                  <layout class="QVBoxLayout" name="verticalLayout_2">
-                   <item>
-                    <widget class="QRadioButton" name="box_btn">
-                     <property name="text">
-                      <string>Bounding Box</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QRadioButton" name="coord_btn">
-                     <property name="text">
-                      <string>Coordinates</string>
-                     </property>
-                     <property name="checked">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
                 </widget>
                </item>
-              </layout>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <item>
-              <layout class="QFormLayout" name="formLayout">
                <item row="1" column="0">
-                <widget class="QLabel" name="label_8">
+                <widget class="QLabel" name="label_7">
                  <property name="text">
-                  <string>Latitude</string>
+                  <string>End Date</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QDoubleSpinBox" name="lat">
-                 <property name="suffix">
-                  <string>°</string>
+                <widget class="QDateEdit" name="end_date">
+                 <property name="dateTime">
+                  <datetime>
+                   <hour>0</hour>
+                   <minute>0</minute>
+                   <second>0</second>
+                   <year>2021</year>
+                   <month>1</month>
+                   <day>1</day>
+                  </datetime>
                  </property>
-                 <property name="decimals">
-                  <number>3</number>
+                 <property name="displayFormat">
+                  <string>yyyy-MM-dd</string>
                  </property>
-                 <property name="minimum">
-                  <double>-90.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>90.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-33.869999999999997</double>
+                 <property name="calendarPopup">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_9">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_10">
                  <property name="text">
-                  <string>Longitude</string>
+                  <string>Resolution</string>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QDoubleSpinBox" name="long_2">
-                 <property name="suffix">
-                  <string>°</string>
-                 </property>
-                 <property name="decimals">
-                  <number>3</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-180.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>180.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>151.210000000000008</double>
-                 </property>
+               <item row="4" column="1">
+                <widget class="QComboBox" name="res">
+                 <item>
+                  <property name="text">
+                   <string>Very High (&lt;0.5m)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>High (0.5m-1m)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Medium (1m-5m)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Low (5m-20m)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Very Low (&gt;20m)</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
-              </layout>
-             </item>
-             <item alignment="Qt::AlignHCenter">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>OR</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <item>
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>North</string>
+               <item row="0" column="1">
+                <widget class="QDateEdit" name="start_date">
+                 <property name="dateTime">
+                  <datetime>
+                   <hour>0</hour>
+                   <minute>0</minute>
+                   <second>0</second>
+                   <year>2021</year>
+                   <month>1</month>
+                   <day>1</day>
+                  </datetime>
                  </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="north">
-                 <property name="suffix">
-                  <string>°</string>
+                 <property name="displayFormat">
+                  <string>yyyy-MM-dd</string>
                  </property>
-                 <property name="decimals">
-                  <number>3</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-90.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>90.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-33.869999999999997</double>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>South</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="south">
-                 <property name="suffix">
-                  <string>°</string>
-                 </property>
-                 <property name="decimals">
-                  <number>3</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-90.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>90.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>-33.869999999999997</double>
+                 <property name="calendarPopup">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
+              <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
-                <widget class="QLabel" name="label_4">
+                <layout class="QVBoxLayout" name="verticalLayout">
+                 <item>
+                  <widget class="QGroupBox" name="searchType">
+                   <property name="title">
+                    <string>Please indicate how you want to search</string>
+                   </property>
+                   <widget class="QWidget" name="verticalLayoutWidget">
+                    <property name="geometry">
+                     <rect>
+                      <x>0</x>
+                      <y>20</y>
+                      <width>160</width>
+                      <height>141</height>
+                     </rect>
+                    </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_2">
+                     <item>
+                      <widget class="QRadioButton" name="coord_btn">
+                       <property name="text">
+                        <string>Coordinates</string>
+                       </property>
+                       <property name="checked">
+                        <bool>true</bool>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QRadioButton" name="box_btn">
+                       <property name="text">
+                        <string>Bounding Box</string>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <layout class="QFormLayout" name="formLayout">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Latitude</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="lat">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-90.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>90.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-33.869999999999997</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>Longitude</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QDoubleSpinBox" name="long_2">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-180.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>180.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>151.210000000000008</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item alignment="Qt::AlignHCenter">
+                <widget class="QLabel" name="label_12">
                  <property name="text">
-                  <string>East</string>
+                  <string>OR</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="east">
-                 <property name="suffix">
-                  <string>°</string>
-                 </property>
-                 <property name="decimals">
-                  <number>3</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-180.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>180.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>151.210000000000008</double>
-                 </property>
-                </widget>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <item>
+                  <widget class="QLabel" name="label_3">
+                   <property name="text">
+                    <string>North</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="north">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-90.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>90.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-33.869999999999997</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_5">
+                   <property name="text">
+                    <string>South</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="south">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-90.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>90.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>-33.869999999999997</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item>
-                <widget class="QLabel" name="label_11">
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <item>
+                  <widget class="QLabel" name="label_4">
+                   <property name="text">
+                    <string>East</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="east">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-180.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>180.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>151.210000000000008</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_11">
+                   <property name="text">
+                    <string>West</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QDoubleSpinBox" name="west">
+                   <property name="suffix">
+                    <string>°</string>
+                   </property>
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
+                   <property name="minimum">
+                    <double>-180.000000000000000</double>
+                   </property>
+                   <property name="maximum">
+                    <double>180.000000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>151.210000000000008</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item alignment="Qt::AlignRight">
+                <widget class="QPushButton" name="searchButton">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
-                  <string>West</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QDoubleSpinBox" name="west">
-                 <property name="suffix">
-                  <string>°</string>
-                 </property>
-                 <property name="decimals">
-                  <number>3</number>
-                 </property>
-                 <property name="minimum">
-                  <double>-180.000000000000000</double>
-                 </property>
-                 <property name="maximum">
-                  <double>180.000000000000000</double>
-                 </property>
-                 <property name="value">
-                  <double>151.210000000000008</double>
+                  <string>Search</string>
                  </property>
                 </widget>
                </item>
               </layout>
-             </item>
-             <item alignment="Qt::AlignRight">
-              <widget class="QPushButton" name="searchButton">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="text">
-                <string>Search</string>
-               </property>
-              </widget>
              </item>
             </layout>
            </item>
+           <item row="1" column="0">
+            <widget class="QTableWidget" name="resultTable">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>192</height>
+              </size>
+             </property>
+             <column>
+              <property name="text">
+               <string>Supplier</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Date</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Resolution (m/pix)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Area (sq. km)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Base Price (USD)</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Cloud</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Thumbnail</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Bounding</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Add</string>
+              </property>
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+                <underline>false</underline>
+               </font>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Order</string>
+              </property>
+             </column>
+            </widget>
+           </item>
           </layout>
-         </item>
-         <item>
-          <widget class="QTableWidget" name="resultTable">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>192</height>
-            </size>
-           </property>
-           <column>
-            <property name="text">
-             <string>Supplier</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Date</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Resolution (m/pix)</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Area (sq. km)</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Base Price (USD)</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Cloud</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Thumbnail</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Bounding</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Add</string>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-              <underline>false</underline>
-             </font>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Order</string>
-            </property>
-           </column>
-          </widget>
          </item>
         </layout>
        </widget>
-      </widget>
-      <widget class="QWidget" name="tab_3">
-       <attribute name="title">
-        <string>Order Imagery</string>
-       </attribute>
-       <widget class="QWidget" name="verticalLayoutWidget_6">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>1221</width>
-          <height>661</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_11">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_9">
+       <widget class="QWidget" name="tab_3">
+        <attribute name="title">
+         <string>Order Imagery</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_9">
+         <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_10">
-             <item>
-              <widget class="QLabel" name="orderImgLabel">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>No imagery selected. Please select imagery from the 'Search Archive' tab.</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QTextBrowser" name="imageDetails"/>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_13">
-               <item>
-                <widget class="QLabel" name="label_20">
+            <layout class="QGridLayout" name="gridLayout_8">
+             <item row="0" column="0">
+              <layout class="QGridLayout" name="gridLayout_2">
+               <item row="0" column="0">
+                <widget class="QLabel" name="orderImgLabel">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>10</pointsize>
+                  </font>
+                 </property>
                  <property name="text">
-                  <string>Seats:</string>
+                  <string>No imagery selected. Please select imagery from the 'Search Archive' tab.</string>
+                 </property>
+                 <property name="scaledContents">
+                  <bool>false</bool>
+                 </property>
+                 <property name="wordWrap">
+                  <bool>true</bool>
                  </property>
                 </widget>
                </item>
-               <item>
-                <widget class="QSpinBox" name="seats">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>99999</number>
-                 </property>
-                </widget>
+               <item row="4" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_15">
+                 <item>
+                  <widget class="QCheckBox" name="eulaAgree">
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="eulaLabel">
+                   <property name="text">
+                    <string>I agree to the End User Licence Agreement</string>
+                   </property>
+                   <property name="textFormat">
+                    <enum>Qt::RichText</enum>
+                   </property>
+                   <property name="openExternalLinks">
+                    <bool>true</bool>
+                   </property>
+                   <property name="textInteractionFlags">
+                    <set>Qt::TextBrowserInteraction</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
-               <item>
-                <spacer name="horizontalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
+               <item row="3" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
+                 <item>
+                  <widget class="QLabel" name="label_20">
+                   <property name="text">
+                    <string>Seats:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="seats">
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>99999</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_15">
-               <item>
-                <widget class="QCheckBox" name="eulaAgree">
-                 <property name="text">
-                  <string/>
+               <item row="1" column="0">
+                <widget class="QTextBrowser" name="imageDetails">
+                 <property name="html">
+                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="eulaLabel">
-                 <property name="text">
-                  <string>I agree to the End User Licence Agreement</string>
-                 </property>
-                 <property name="textFormat">
-                  <enum>Qt::RichText</enum>
+                 <property name="textInteractionFlags">
+                  <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                  </property>
                  <property name="openExternalLinks">
                   <bool>true</bool>
                  </property>
-                 <property name="textInteractionFlags">
-                  <set>Qt::TextBrowserInteraction</set>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="0" column="1">
+              <layout class="QGridLayout" name="gridLayout_7">
+               <item row="0" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
+                 <item>
+                  <widget class="QLabel" name="label_18">
+                   <property name="text">
+                    <string>Webhooks:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="webhookIn"/>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="webhookAdd">
+                   <property name="text">
+                    <string>Add webhook</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="0">
+                <widget class="QListWidget" name="webhookList"/>
+               </item>
+               <item row="2" column="0">
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
+                 <item>
+                  <widget class="QLabel" name="label_19">
+                   <property name="text">
+                    <string>Emails</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="emailIn"/>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="emailAdd">
+                   <property name="text">
+                    <string>Add email</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="0">
+                <widget class="QListWidget" name="emailList"/>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="price">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Price: </string>
                  </property>
                 </widget>
                </item>
-               <item>
-                <spacer name="horizontalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+               <item row="5" column="0">
+                <widget class="QPushButton" name="sendOrder">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
+                 <property name="text">
+                  <string>Order Imagery</string>
                  </property>
-                </spacer>
+                </widget>
                </item>
               </layout>
              </item>
             </layout>
            </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Get Resource</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_10">
+         <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
                <item>
-                <widget class="QLabel" name="label_18">
+                <widget class="QLabel" name="label_13">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
-                  <string>Webhooks:</string>
+                  <string>Available orders:</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="webhookIn"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="webhookAdd">
-                 <property name="text">
-                  <string>Add webhook</string>
+                <widget class="QPushButton" name="listButton">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <widget class="QListWidget" name="webhookList"/>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_12">
-               <item>
-                <widget class="QLabel" name="label_19">
                  <property name="text">
-                  <string>Emails</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="emailIn"/>
-               </item>
-               <item>
-                <widget class="QPushButton" name="emailAdd">
-                 <property name="text">
-                  <string>Add email</string>
+                  <string>List orders</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
-             <item>
-              <widget class="QListWidget" name="emailList"/>
+             <item row="1" column="0">
+              <widget class="QListWidget" name="orderList">
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+              </widget>
              </item>
-             <item>
-              <widget class="QLabel" name="price">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="selectOrder">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string>Price: </string>
+                <string>List resources from selected order</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
+             <item>
+              <layout class="QFormLayout" name="formLayout_3"/>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_8">
+               <item>
+                <widget class="QLabel" name="label_14">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>Order resources:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="orderLabel">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>No order selected</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QListWidget" name="resourceList">
+               <property name="selectionMode">
+                <enum>QAbstractItemView::ExtendedSelection</enum>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="sendOrder">
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_15">
+                 <property name="text">
+                  <string>Folder to save resource:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QgsFileWidget" name="resourceFolder">
+                 <property name="storageMode">
+                  <enum>QgsFileWidget::GetDirectory</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QPushButton" name="selectResource">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
-                <string>Order Imagery</string>
+                <string>Download selected resource(s)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="addResource">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Add relevant filetypes to current QGIS Project as a Layer</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QProgressBar" name="progressBar">
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="textVisible">
+                <bool>false</bool>
+               </property>
+               <property name="invertedAppearance">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -669,177 +870,50 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Get Resource</string>
-       </attribute>
-       <widget class="QWidget" name="horizontalLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>1231</width>
-          <height>641</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_6">
-             <item>
-              <widget class="QLabel" name="label_13">
-               <property name="text">
-                <string>Available orders:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="listButton">
-               <property name="text">
-                <string>List orders</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QListWidget" name="orderList">
-             <property name="selectionMode">
-              <enum>QAbstractItemView::SingleSelection</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="selectOrder">
-             <property name="text">
-              <string>List resources from selected order</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <item>
-            <layout class="QFormLayout" name="formLayout_3"/>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QLabel" name="label_14">
-               <property name="text">
-                <string>Order resources:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="orderLabel">
-               <property name="text">
-                <string>No order selected</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QListWidget" name="resourceList">
-             <property name="selectionMode">
-              <enum>QAbstractItemView::ExtendedSelection</enum>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QLabel" name="label_15">
-               <property name="text">
-                <string>Folder to save resource:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QgsFileWidget" name="resourceFolder">
-               <property name="storageMode">
-                <enum>QgsFileWidget::GetDirectory</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QPushButton" name="selectResource">
-             <property name="text">
-              <string>Download selected resource(s)</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="addResource">
-             <property name="text">
-              <string>Add relevant filetypes to current QGIS Project as a Layer</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QProgressBar" name="progressBar">
-             <property name="value">
-              <number>0</number>
-             </property>
-             <property name="textVisible">
-              <bool>false</bool>
-             </property>
-             <property name="invertedAppearance">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_10">
-      <item>
-       <widget class="QLabel" name="label_16">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Status:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="status">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>No pending requests</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
+     </item>
+     <item row="2" column="0">
+      <layout class="QHBoxLayout" name="horizontalLayout_10">
+       <item>
+        <widget class="QLabel" name="label_16">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Status:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="status">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>No pending requests</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
  </widget>
  <customwidgets>
   <customwidget>
