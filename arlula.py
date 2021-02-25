@@ -38,11 +38,10 @@ import json
 import arlulacore
 import PIL.Image
 import requests
-import threading
 
 py_version = sys.version.split(' ')[0]
 os_version = platform.platform()
-def_ua = "qgis-plugin " + '[experimental v0.4.0]' + " python " + py_version + " OS " + os_version
+def_ua = "qgis-plugin " + '[experimental]' + " python " + py_version + " OS " + os_version
 
 # Default message to display on GUI
 DEFAULT_STATUS = "No pending requests"
@@ -113,7 +112,7 @@ class Arlula:
         }
         self.search_results = []
         
-        # Get resouce
+        # Get resource
         self.files = []
         self.coords = True
         self.box = False
@@ -393,7 +392,7 @@ class Arlula:
         self.dlg.status.setText(DEFAULT_STATUS)
     
     def list_resources(self):
-        # Function to list available resources from one or more selected orders
+        # Function to list available resources from one selected orders
         QgsMessageLog.logMessage('Listing resources', 'Arlula')
         self.resources = []
         self.dlg.resourceList.clear()
@@ -477,6 +476,20 @@ class Arlula:
                                       <tr><td>Cloud</td><td>{self.current_order_details.cloud}</td></tr>
                                       <tr><td>Annotations</td><td>{self.current_order_details.annotations}</td></tr>
                                       </table>""")
+        
+        # See if we need to limit the seats
+        max_seats = 0
+        limit_seats = True
+        for seatrng in self.current_order_details.price.seats :
+            if seatrng.max > max_seats:
+                max_seats = seatrng.max
+            if seatrng.max == 0 :
+                limit_seats = False
+                
+        if limit_seats:
+            self.dlg.seats.setRange(1, max_seats)
+        else:
+            self.dlg.seats.setRange(1, 999999999)
         
         self.dlg.orderImgLabel.setText(f"Ordering scene {self.current_order_details.sceneID}")
         self.dlg.eulaLabel.setText(f"I agree to the <a href=\"{self.current_order_details.eula}\">End User Licence Agreement</a>")

@@ -8,7 +8,7 @@ qgisMinimumVersion=3.0
 description=A user interface between QGIS and the Arlula Satellite Imagery API
 version=0.4.0
 author=Arlula
-email=adamhammo99@gmail.com
+email=scott.owens.dev@gmail.com
 
 about=[EXPERIMENTAL] arlula plugin
 
