@@ -480,16 +480,17 @@ class Arlula:
         # See if we need to limit the seats
         max_seats = 0
         limit_seats = True
-        for seatrng in self.current_order_details.price.seats :
-            if seatrng.max > max_seats:
-                max_seats = seatrng.max
-            if seatrng.max == 0 :
-                limit_seats = False
-                
-        if limit_seats:
-            self.dlg.seats.setRange(1, max_seats)
-        else:
-            self.dlg.seats.setRange(1, 999999999)
+        if self.current_order_details.price.seats != None :
+            for seatrng in self.current_order_details.price.seats :
+                if seatrng.max > max_seats:
+                    max_seats = seatrng.max
+                if seatrng.max == 0 :
+                    limit_seats = False
+                    
+            if limit_seats:
+                self.dlg.seats.setRange(1, max_seats)
+            else:
+                self.dlg.seats.setRange(1, 999999999)
         
         self.dlg.orderImgLabel.setText(f"Ordering scene {self.current_order_details.sceneID}")
         self.dlg.eulaLabel.setText(f"I agree to the <a href=\"{self.current_order_details.eula}\">End User Licence Agreement</a>")
