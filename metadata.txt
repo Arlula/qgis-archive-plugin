@@ -6,7 +6,7 @@
 name=arlula
 qgisMinimumVersion=3.0
 description=A user interface between QGIS and the Arlula Satellite Imagery API
-version=0.4.0
+version=1.0.0
 author=Arlula
 email=scott.owens.dev@gmail.com
 
@@ -29,7 +29,7 @@ homepage=https://arlula.com
 category=Plugins
 icon=icon.png
 # experimental flag
-experimental=True
+experimental=False
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
